@@ -20,7 +20,7 @@ CI_ENVIRONMENT = production
 # APP
 #--------------------------------------------------------------------
 
-app.baseURL = ''
+app.baseURL = 'https://kejari-salatiga.kejaksaan.go.id'
 app.indexPage = ''
 app.defaultLocale = 'id'
 app.appTimezone = 'Asia/Jakarta'
