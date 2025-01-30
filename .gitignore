@@ -1,0 +1,65 @@
+# CodeIgniter 4 specific
+writable/cache/*
+!writable/cache/index.html
+writable/logs/*
+!writable/logs/index.html
+writable/session/*
+!writable/session/index.html
+writable/uploads/*
+!writable/uploads/index.html
+writable/debugbar/*
+!writable/debugbar/index.html
+
+# Environment files
+.env
+.env.backup
+.env.*
+!.env.example
+
+# PHP CS Fixer
+.php-cs-fixer.cache
+.php_cs.cache
+.php_cs
+
+# Composer
+vendor/
+composer.lock
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (if using npm/yarn for frontend)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build files
+public/build/
+public/dist/
+public/hot/
+
+# Testing
+phpunit.xml
+.phpunit.result.cache
+tests/coverage/
+
+# Application specific
+public/uploads/
+*.log
+*.sql
+*.sqlite
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.bak

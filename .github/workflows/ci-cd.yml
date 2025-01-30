@@ -1,0 +1,62 @@
+name: CI/CD to cPanel
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, intl, json, xml, mysql
+        
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    
+    - name: Install Dependencies
+      run: composer install --no-dev
+      
+    - name: Run Tests
+      run: |
+        composer test
+        
+    - name: Generate Environment File
+      run: |
+        cp env .env
+        sed -i 's/CI_ENVIRONMENT = development/CI_ENVIRONMENT = production/' .env
+        sed -i 's/database.default.hostname = localhost/database.default.hostname = ${{ secrets.DB_HOST }}/' .env
+        sed -i 's/database.default.database = ci4/database.default.database = ${{ secrets.DB_NAME }}/' .env
+        sed -i 's/database.default.username = root/database.default.username = ${{ secrets.DB_USER }}/' .env
+        sed -i 's/database.default.password =/database.default.password = ${{ secrets.DB_PASSWORD }}/' .env
+        
+    - name: Deploy to cPanel
+      uses: SamKirkland/FTP-Deploy-Action@4.0.0
+      with:
+        server: ${{ secrets.CPANEL_HOST }}
+        username: ${{ secrets.CPANEL_USERNAME }}
+        password: ${{ secrets.CPANEL_PASSWORD }}
+        server-dir: public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/tests/**
+          **/phpunit.xml
+          README.md
+          .env.example
+          composer.json
+          composer.lock
